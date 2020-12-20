@@ -1,5 +1,8 @@
-# Object file
-*.o
-
-# Ada Library Information
-*.ali
+# Default
+archive
+bin
+data
+libs
+logs
+run
+site-docs

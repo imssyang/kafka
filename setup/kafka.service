@@ -1,0 +1,15 @@
+[Unit]
+Description=Open-source distributed event streaming platform
+After=zookeeper.service
+Documentation=https://kafka.apache.org/quickstart
+
+[Service]
+Type=simple
+Environment="JAVA_HOME=/opt/java"
+ExecStart=/opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/server.properties
+ExecStop=/opt/kafka/bin/kafka-server-stop.sh
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target
