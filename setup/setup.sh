@@ -24,7 +24,7 @@ init() {
 
   if [[ ! -d $HOME/tmp ]]; then
     mkdir $HOME/tmp
-	mkdir $HOME/tmp/zookeeper
+    mkdir $HOME/tmp/zookeeper
   fi
 
   chown -R $GROUP:$USER $HOME
