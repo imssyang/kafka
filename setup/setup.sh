@@ -8,6 +8,16 @@ SYSD=/etc/systemd/system
 SERFILE=kafka.service
 
 init() {
+  egrep "^$GROUP" /etc/group >/dev/null
+  if [[ $? -ne 0 ]]; then
+    groupadd -r $GROUP
+  fi
+
+  egrep "^$USER" /etc/passwd >/dev/null
+  if [[ $? -ne 0 ]]; then
+    useradd -r -g $GROUP -s /usr/sbin/nologin -M $USER
+  fi
+
   if [[ ! -d $HOME/logs ]]; then
     mkdir $HOME/logs
   fi
@@ -30,6 +40,16 @@ init() {
 }
 
 deinit() {
+  egrep "^$USER" /etc/passwd >/dev/null
+  if [[ $? -eq 0 ]]; then
+    userdel $USER
+  fi
+
+  egrep "^$GROUP" /etc/group >/dev/null
+  if [[ $? -eq 0 ]]; then
+    groupdel $GROUP
+  fi
+
   chown -R root:root $HOME
 
   if [[ -d $HOME/tmp ]]; then
