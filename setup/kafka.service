@@ -1,15 +1,18 @@
 [Unit]
-Description=Open-source distributed event streaming platform
-After=zookeeper.service
-Documentation=https://kafka.apache.org/quickstart
+Description=Apache Kafka server (broker)
+Documentation=http://kafka.apache.org/documentation.html
+Requires=network.target remote-fs.target
+#After=network.target remote-fs.target kafka-zookeeper.service
+After=network.target remote-fs.target zookeeper.service
 
 [Service]
 Type=simple
+User=kafka
+Group=kafka
 Environment="JAVA_HOME=/opt/java"
 ExecStart=/opt/kafka/bin/kafka-server-start.sh /opt/kafka/config/server.properties
 ExecStop=/opt/kafka/bin/kafka-server-stop.sh
-User=root
-Group=root
 
 [Install]
 WantedBy=multi-user.target
+

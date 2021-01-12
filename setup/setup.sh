@@ -1,23 +1,20 @@
 #!/bin/bash
 
 APP=kafka
-USER=root
-GROUP=root
+USER=kafka
+GROUP=kafka
 HOME=/opt/$APP
 SYSD=/etc/systemd/system
 SERFILE=kafka.service
 
-initialize() {
-  if [[ ! -d $HOME/data ]]; then
-    mkdir $HOME/data
-  fi
-
+init() {
   if [[ ! -d $HOME/logs ]]; then
     mkdir $HOME/logs
   fi
 
-  if [[ ! -d $HOME/run ]]; then
-    mkdir $HOME/run
+  if [[ ! -d $HOME/tmp ]]; then
+    mkdir $HOME/tmp
+	mkdir $HOME/tmp/zookeeper
   fi
 
   chown -R $GROUP:$USER $HOME
@@ -32,12 +29,12 @@ initialize() {
   systemctl daemon-reload
 }
 
-deinitialize() {
+deinit() {
   chown -R root:root $HOME
 
-  if [[ -d $HOME/run ]]; then
-    rm -rf $HOME/run
-    echo "($APP) delete $HOME/run"
+  if [[ -d $HOME/tmp ]]; then
+    rm -rf $HOME/tmp
+    echo "($APP) delete $HOME/tmp"
   fi
 
   if [[ -d $HOME/logs ]]; then
@@ -52,45 +49,45 @@ deinitialize() {
   fi
 }
 
-daemon_start() {
+start() {
   local pid=$(jps -l -m | grep $APP | awk '{print $1}')
   if [[ "x" == "x$pid" ]]; then
     systemctl start $SERFILE
     echo "($APP) $SERFILE start!"
   fi
 
-  daemon_show
+  show
 }
 
-daemon_stop() {
+stop() {
   local pid=$(jps -l -m | grep $APP | awk '{print $1}')
   if [[ "x" != "x$pid" ]]; then
     systemctl stop $SERFILE
     echo "($APP) $SERFILE stop!"
   fi
 
-  daemon_show
+  show
 }
 
-daemon_show() {
+show() {
   jps -l -m | grep $APP
 }
 
 case "$1" in
   init)
-    initialize
+    init
     ;;
   deinit)
-    deinitialize
+    deinit
     ;;
   start)
-    daemon_start
+    start
     ;;
   stop)
-    daemon_stop
+    stop
     ;;
   show)
-	daemon_show
+	show
 	;;
   *)
     SCRIPTNAME="${0##*/}"
