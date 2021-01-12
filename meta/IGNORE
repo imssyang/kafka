@@ -1,5 +1,5 @@
 # Ignore
 archive
-data
 logs
-run
+tmp
+
